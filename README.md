@@ -4,6 +4,8 @@ Before you can run this project using Docker Compose, make sure you have created
 
 Here are the steps to set up the project:
 Note : **Make Sure Your /helper/source/init.sql have the data**
+1. Clone repository
+2. If you can't find dataset-olist/helper/source_init/init.sql, please download manually https://github.com/Kurikulum-Sekolah-Pacmann/dataset-olist/tree/main/helper/source_init
 1. Create a new file named `.env` in the root directory of the project.
 2. Open the `.env` file and add the following environment variables:
 
