@@ -1,34 +1,57 @@
-version: '3'
+volumes:
+  source-volume:
+  dwh-volume:
+
+networks:
+  olist-network:
+    driver: bridge
 
 services:
   sources:
-    image: postgres:latest
+    image: postgres:16
     container_name: olist-sources
-    restart: always
+    restart: unless-stopped
     environment:
-      - POSTGRES_DB=${SRC_POSTGRES_DB}
-      - POSTGRES_USER=${SRC_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${SRC_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${SRC_POSTGRES_DB}
+      POSTGRES_USER: ${SRC_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${SRC_POSTGRES_PASSWORD}
     ports:
-      - ${SRC_POSTGRES_PORT}:5432
+      - "${SRC_POSTGRES_PORT}:5432"
     volumes:
-      - ./helper/source_init:/docker-entrypoint-initdb.d
       - source-volume:/var/lib/postgresql/data
+      - ./helper/source_init:/docker-entrypoint-initdb.d
+    networks:
+      - olist-network
 
   dwh:
-    image: postgres:latest
+    image: postgres:16
     container_name: olist-dwh
-    restart: always
+    restart: unless-stopped
     environment:
-      - POSTGRES_DB=${DWH_POSTGRES_DB}
-      - POSTGRES_USER=${DWH_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${DWH_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DWH_POSTGRES_DB}
+      POSTGRES_USER: ${DWH_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DWH_POSTGRES_PASSWORD}
     ports:
-      - ${DWH_POSTGRES_PORT}:5432
+      - "${DWH_POSTGRES_PORT}:5432"
     volumes:
-      - dwh_volume:/var/lib/postgresql/data
-      - ./helper/dwh_init/:/docker-entrypoint-initdb.d
+      - dwh-volume:/var/lib/postgresql/data
+      - ./helper/dwh_init:/docker-entrypoint-initdb.d
+    networks:
+      - olist-network
 
-volumes:
-  source-volume:
-  dwh_volume:
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: olist-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin
+    networks:
+      - olist-network
+    depends_on:
+      - sources
+      - dwh

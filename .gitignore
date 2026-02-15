@@ -3,3 +3,11 @@ creds/
 .env
 **/__pycache__/
 **/.ipynb_checkpoints/
+
+# etc
+draft/
+pgadmin-data/
+helper/dwh_init/
+helper/source_init/init.sql
+uv.lock
+requirements.txt
