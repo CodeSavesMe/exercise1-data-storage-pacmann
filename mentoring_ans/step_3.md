@@ -1,6 +1,6 @@
 ## Step #3 — Create Report
 
-# Building an Enterprise-Ready Data Warehouse for Olist with Kimball Dimensional Modeling
+# Data Warehouse for Olist with Kimball Dimensional Modeling
 
 ## Introduction
 
